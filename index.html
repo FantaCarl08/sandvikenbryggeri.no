@@ -1,7 +1,45 @@
-<!-- Legg denne i <head> på nettsiden din -->
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandviken Bryggeri</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Spline Viewer Script -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+</head>
+<body class="bg-stone-900 text-stone-100 min-h-screen flex flex-col justify-between">
 
-<!-- Legg denne inn der du vil at 3D-flasken skal vises -->
-<div class="w-full max-w-2xl mx-auto h-[600px]">
-  <spline-viewer url="<iframe src='https://my.spline.design/untitled-qsxe0OD3zXvcZgShkVQXk5qf/' frameborder='0' width='100%' height='100%'></iframe>"></spline-viewer>
-</div>
+    <!-- HEADER / NAV -->
+    <header class="py-6 border-b border-stone-800">
+        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wider text-amber-500 uppercase">Sandviken Bryggeri</h1>
+            <nav class="space-x-6 text-sm font-medium text-stone-300">
+                <a href="#3d-showcase" class="hover:text-amber-500 transition">Vår Øl</a>
+                <a href="#om-oss" class="hover:text-amber-500 transition">Om Oss</a>
+                <a href="#kontakt" class="hover:text-amber-500 transition">Kontakt</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION MED 3D-MODEL -->
+    <main id="3d-showcase" class="max-w-5xl mx-auto px-4 py-12 flex flex-col items-center text-center">
+        <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Handverksøl fra Sandviken</h2>
+        <p class="text-stone-400 max-w-xl mb-8">
+            Klikk og roter flasken under for å se nærmere på designet og etiketten vår.
+        </p>
+
+        <!-- 3D FLASKE VISNING -->
+        <div class="w-full h-[600px] max-w-3xl bg-stone-950/50 rounded-2xl border border-stone-800 shadow-2xl overflow-hidden relative">
+            <spline-viewer url="https://my.spline.design/untitled-qsxe0OD3zXvcZgShkVQXk5qf/"></spline-viewer>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="kontakt" class="py-8 border-t border-stone-800 text-center text-stone-500 text-sm">
+        <p>&copy; 2026 Sandviken Bryggeri. Alle rettigheter reservert.</p>
+    </footer>
+
+</body>
+</html>

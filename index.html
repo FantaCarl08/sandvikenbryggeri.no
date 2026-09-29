@@ -6,33 +6,154 @@
   <title>Sandviken Bryggeri</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
+    :root {
+      --front: #a3307a;  /* mystic red/purple, front of the letters */
+      --side:  #3a0d2b;  /* dark purple, back/side of the letters */
+      --white: #ffffff;
+      --bg:    #000000;
+      --stretch: 1.8;    /* how tall the logo is stretched */
     }
+    html, body { margin: 0; min-height: 100%; }
     body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #12303b; /* Bergen harbour blue */
+      background: var(--bg);
+      color: var(--white);
+      font-family: "Times New Roman", Times, serif;   /* trash on purpose */
+      font-size: 18px;
+      text-align: center;
       padding: 1rem;
       box-sizing: border-box;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    h1 {
-      margin: 0;
-      text-align: center;
-      font-family: "UnifrakturCook", "Old English Text MT", Georgia, serif;
-      font-weight: 700;
-      font-size: clamp(2.5rem, 9vw, 7rem);
-      line-height: 1.1;
-      color: #f2b632; /* beer gold */
-      text-shadow: 0 4px 0 #0a1c23;
+
+    /* ---------- 3D spinning logo ---------- */
+    #stage { perspective: 900px; padding: 5rem 0 7rem; max-width: 100%; }
+    #logo {
+      position: relative;
+      display: inline-block;
+      transform-style: preserve-3d;
+      font-family: Anton, Impact, "Arial Narrow", sans-serif;
+      font-size: clamp(2.5rem, 11vw, 12rem);
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      /* choppy, low-framerate spin */
+      animation: spin 8s steps(40) infinite;
+    }
+    #logo .layer { display: block; }
+    #logo .layer.back { position: absolute; left: 0; top: 0; }
+    @keyframes spin {
+      from { transform: rotateY(0deg) scaleY(var(--stretch)); }
+      to   { transform: rotateY(360deg) scaleY(var(--stretch)); }
+    }
+
+    /* ---------- trash ---------- */
+    .box {
+      border: 4px ridge var(--front);
+      padding: 0.8rem 1.2rem;
+      margin: 1rem auto;
+      max-width: 30rem;
+    }
+    label { display: block; margin-bottom: 0.6rem; }
+    input, button { font-size: 1rem; }        /* default browser look, on purpose */
+    #error { color: var(--front); font-weight: bold; min-height: 1.4em; margin: 0.6rem 0 0; }
+    #gate, #site { position: relative; z-index: 10; }
+    #site { display: none; }
+    a { color: var(--front); }
+
+    .marquee { width: 100%; max-width: 34rem; overflow: hidden; white-space: nowrap; margin: 0.5rem auto; border-top: 2px dashed var(--front); border-bottom: 2px dashed var(--front); }
+    .marquee span { display: inline-block; padding-left: 100%; color: var(--front); font-weight: bold; animation: scroll 12s linear infinite; }
+    @keyframes scroll { to { transform: translateX(-100%); } }
+
+    .blink { animation: blink 1s steps(1) infinite; color: var(--front); font-weight: bold; }
+    @keyframes blink { 50% { visibility: hidden; } }
+
+    .counter { font-family: "Courier New", monospace; background: var(--white); color: var(--bg); padding: 0 0.4rem; letter-spacing: 0.15em; }
+
+    @media (prefers-reduced-motion: reduce) {
+      #logo, .marquee span, .blink { animation: none; }
+      .marquee span { padding-left: 0; }
     }
   </style>
 </head>
 <body>
-  <h1>Sandviken Bryggeri</h1>
+
+  <!-- 3D spinning logo -->
+  <div id="stage">
+    <div id="logo" role="img" aria-label="Sandviken Bryggeri"></div>
+  </div>
+
+  <!-- Password barrier -->
+  <div id="gate">
+    <label for="pw">Enter password:</label>
+    <input type="password" id="pw" autocomplete="off" autofocus>
+    <button id="enter">OK</button>
+    <p id="error" role="alert"></p>
+  </div>
+
+  <!-- The actual website (hidden until the password is correct) -->
+  <div id="site">
+    <div class="marquee"><span>*** WELCOME *** SANDVIKEN BRYGGERI *** WELCOME ***</span></div>
+    <p><span class="blink">NEW!</span> This website is under construction</p>
+    <div class="box">
+      <p>Put your content here.</p>
+    </div>
+    <p>You are visitor number <span class="counter">000042</span></p>
+    <hr style="width:20rem; max-width:100%; border-color: var(--front);">
+    <p><a href="#">Home</a> | <a href="#">Beer</a> | <a href="#">Contact</a></p>
+  </div>
+
+  <script>
+    var PASSWORD = "changeme"; // <-- put your own password here
+
+    // ---- Build the extruded 3D text out of stacked copies ----
+    var TEXT = "Sandviken Bryggeri";
+    var LAYERS = 36;        // more layers = thicker letters
+    var STEP = 2.2;         // px between layers
+    var logo = document.getElementById("logo");
+    var half = (LAYERS * STEP) / 2;
+
+    for (var i = 0; i < LAYERS; i++) {
+      var s = document.createElement("span");
+      s.className = "layer" + (i === 0 ? "" : " back");
+      s.setAttribute("aria-hidden", "true");
+      s.textContent = TEXT;
+      s.style.transform = "translateZ(" + (half - i * STEP) + "px)";
+      // front face bright, sides fade to dark
+      var pct = Math.round(100 - (i / (LAYERS - 1)) * 100);
+      s.style.color = i === 0 ? "var(--front)"
+        : "color-mix(in srgb, var(--front) " + Math.round(pct * 0.55) + "%, var(--side))";
+      logo.appendChild(s);
+    }
+
+    // ---- Password check ----
+    var gate = document.getElementById("gate");
+    var site = document.getElementById("site");
+    var input = document.getElementById("pw");
+    var error = document.getElementById("error");
+
+    function tryEnter() {
+      if (input.value === PASSWORD) {
+        gate.style.display = "none";
+        site.style.display = "block";
+      } else {
+        error.textContent = "WRONG PASSWORD";
+        input.value = "";
+        input.focus();
+      }
+    }
+    document.getElementById("enter").addEventListener("click", tryEnter);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") tryEnter();
+    });
+  </script>
+
 </body>
 </html>

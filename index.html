@@ -3,43 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sandviken Bryggeri</title>
-    <!-- Tailwind CSS CDN -->
+    <title>SANDVIKEN BRYGGERI — WORLDWIDE</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Spline Viewer Script -->
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-stone-900 text-stone-100 min-h-screen flex flex-col justify-between">
+<body class="bg-black text-white selection:bg-white selection:text-black min-h-screen flex flex-col justify-between antialiased">
 
-    <!-- HEADER / NAV -->
-    <header class="py-6 border-b border-stone-800">
-        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-wider text-amber-500 uppercase">Sandviken Bryggeri</h1>
-            <nav class="space-x-6 text-sm font-medium text-stone-300">
-                <a href="#3d-showcase" class="hover:text-amber-500 transition">Vår Øl</a>
-                <a href="#om-oss" class="hover:text-amber-500 transition">Om Oss</a>
-                <a href="#kontakt" class="hover:text-amber-500 transition">Kontakt</a>
+    <!-- TOP BAR / NAV -->
+    <header class="border-b border-neutral-800 py-5 px-6 sticky top-0 bg-black/90 backdrop-blur-md z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-xl font-black tracking-tighter uppercase hover:opacity-80 transition">
+                SANDVIKEN<span class="text-neutral-500">BRYGGERI</span>
+            </a>
+            <nav class="flex gap-6 text-xs uppercase font-bold tracking-widest text-neutral-400">
+                <a href="#flaske" class="hover:text-white transition">FLASKE</a>
+                <a href="#om" class="hover:text-white transition">OM BRYGGERIET</a>
+                <a href="#kontakt" class="hover:text-white transition">KONTAKT</a>
             </nav>
         </div>
     </header>
 
-    <!-- HERO SECTION MED 3D-MODEL -->
-    <main id="3d-showcase" class="max-w-5xl mx-auto px-4 py-12 flex flex-col items-center text-center">
-        <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Handverksøl fra Sandviken</h2>
-        <p class="text-stone-400 max-w-xl mb-8">
-            Klikk og roter flasken under for å se nærmere på designet og etiketten vår.
-        </p>
+    <!-- HERO / 3D SHOWCASE SECTION -->
+    <main id="flaske" class="flex-1 flex flex-col items-center justify-center px-4 py-12">
+        
+        <!-- TAG / HEADER -->
+        <div class="text-center mb-6">
+            <span class="inline-block bg-neutral-900 border border-neutral-800 text-neutral-400 text-[10px] font-mono tracking-widest px-3 py-1 uppercase rounded-full mb-3">
+                LIMITED RELEASE 2026
+            </span>
+            <h1 class="text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none">
+                SANDVIKEN BRYGGERI
+            </h1>
+            <p class="text-neutral-400 text-sm md:text-base font-mono uppercase tracking-widest mt-2">
+                DRAG & ROTATE TO EXPLORE BOTTLE
+            </p>
+        </div>
 
-        <!-- 3D FLASKE VISNING -->
-        <!-- 3D FLASKE VISNING -->
-    <div class="w-full h-[600px] max-w-3xl bg-stone-950/50 rounded-2xl border border-stone-800 shadow-2xl overflow-hidden relative">
-        <iframe src="https://my.spline.design/untitled-qsxe0OD3zXvcZgShkVQXk5qf/" frameborder="0" width="100%" height="100%"></iframe>
-    </div>
+        <!-- 3D DISPLAY CONTAINER (VIN&RAP STYLE FRAME) -->
+        <div class="w-full max-w-4xl h-[550px] md:h-[650px] bg-neutral-950 border border-neutral-800 rounded-none relative shadow-[0_0_50px_rgba(255,255,255,0.03)] overflow-hidden">
+            
+            <!-- CORNER ACCENTS (RAW INDUSTRIAL LOOK) -->
+            <div class="absolute top-3 left-3 text-[10px] font-mono text-neutral-600 z-10">01 // BOTTLE_3D</div>
+            <div class="absolute top-3 right-3 text-[10px] font-mono text-neutral-600 z-10">[ 360° VIEW ]</div>
+
+            <!-- IFRAME FOR 3D MODEL -->
+            <iframe 
+                src="https://my.spline.design/untitled-qsxe0OD3zXvcZgShkVQXk5qf/" 
+                frameborder="0" 
+                width="100%" 
+                height="100%"
+                class="w-full h-full">
+            </iframe>
+
+            <div class="absolute bottom-3 left-3 text-[10px] font-mono text-neutral-600 z-10">SANDVIKEN, BERGEN, NO</div>
+        </div>
+
     </main>
 
     <!-- FOOTER -->
-    <footer id="kontakt" class="py-8 border-t border-stone-800 text-center text-stone-500 text-sm">
-        <p>&copy; 2026 Sandviken Bryggeri. Alle rettigheter reservert.</p>
+    <footer id="kontakt" class="border-t border-neutral-900 py-8 px-6 text-center text-xs text-neutral-500 uppercase tracking-widest font-mono">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 SANDVIKEN BRYGGERI. ALL RIGHTS RESERVED.</p>
+            <div class="flex gap-6">
+                <a href="https://instagram.com" target="_blank" class="hover:text-white transition">INSTAGRAM</a>
+                <a href="mailto:kontakt@sandvikenbryggeri.no" class="hover:text-white transition">E-POST</a>
+            </div>
+        </div>
     </footer>
 
 </body>

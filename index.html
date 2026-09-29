@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nb">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,17 +9,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <style>
     :root {
-      --front: #a3307a;  /* mystic red/purple, front of the letters */
-      --side:  #3a0d2b;  /* dark purple, back/side of the letters */
+      --front: #a3307a;  /* mystisk rød/lilla, forsiden av bokstavene */
+      --side:  #3a0d2b;  /* mørk lilla, bak/sider av bokstavene */
       --white: #ffffff;
       --bg:    #000000;
-      --stretch: 1.8;    /* how tall the logo is stretched */
+      --stretch: 1.8;    /* hvor høy logoen er strukket */
     }
     html, body { margin: 0; min-height: 100%; }
     body {
       background: var(--bg);
       color: var(--white);
-      font-family: "Times New Roman", Times, serif;   /* trash on purpose */
+      font-family: "Times New Roman", Times, serif;   /* søppel med vilje */
       font-size: 18px;
       text-align: center;
       padding: 1rem;
@@ -32,20 +32,20 @@
       justify-content: center;
     }
 
-    /* ---------- 3D spinning logo ---------- */
-    #stage { perspective: 900px; padding: 5rem 0 7rem; max-width: 100%; }
+    /* ---------- 3D-logo som spinner ---------- */
+    #stage { perspective: 2000px; padding: 4rem 0 5.5rem; max-width: 100%; }
     #logo {
       position: relative;
       display: inline-block;
       transform-style: preserve-3d;
       font-family: Anton, Impact, "Arial Narrow", sans-serif;
-      font-size: clamp(2.5rem, 11vw, 12rem);
+      font-size: clamp(2rem, 8vw, 9rem);
       line-height: 1.05;
       letter-spacing: 0.02em;
       text-transform: uppercase;
       white-space: nowrap;
-      /* choppy, low-framerate spin */
-      animation: spin 8s steps(40) infinite;
+      /* jevn, sakte spinn rundt sitt eget senter */
+      animation: spin 14s linear infinite;
     }
     #logo .layer { display: block; }
     #logo .layer.back { position: absolute; left: 0; top: 0; }
@@ -54,7 +54,7 @@
       to   { transform: rotateY(360deg) scaleY(var(--stretch)); }
     }
 
-    /* ---------- trash ---------- */
+    /* ---------- søppel ---------- */
     .box {
       border: 4px ridge var(--front);
       padding: 0.8rem 1.2rem;
@@ -62,7 +62,7 @@
       max-width: 30rem;
     }
     label { display: block; margin-bottom: 0.6rem; }
-    input, button { font-size: 1rem; }        /* default browser look, on purpose */
+    input, button { font-size: 1rem; }        /* standard nettleserutseende, med vilje */
     #error { color: var(--front); font-weight: bold; min-height: 1.4em; margin: 0.6rem 0 0; }
     #gate, #site { position: relative; z-index: 10; }
     #site { display: none; }
@@ -77,6 +77,14 @@
 
     .counter { font-family: "Courier New", monospace; background: var(--white); color: var(--bg); padding: 0 0.4rem; letter-spacing: 0.15em; }
 
+    @media (max-width: 600px) {
+      body { font-size: 16px; padding: 0.75rem; }
+      #logo { font-size: 10.5vw; }
+      #stage { padding: 2.5rem 0 3.5rem; }
+      input { width: 10rem; }
+      .box { padding: 0.6rem 0.8rem; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       #logo, .marquee span, .blink { animation: none; }
       .marquee span { padding-left: 0; }
@@ -85,38 +93,32 @@
 </head>
 <body>
 
-  <!-- 3D spinning logo -->
+  <!-- 3D-logo som spinner -->
   <div id="stage">
     <div id="logo" role="img" aria-label="Sandviken Bryggeri"></div>
   </div>
 
-  <!-- Password barrier -->
+  <!-- Passordsperre -->
   <div id="gate">
-    <label for="pw">Enter password:</label>
+    <label for="pw">Skriv inn passord:</label>
     <input type="password" id="pw" autocomplete="off" autofocus>
     <button id="enter">OK</button>
     <p id="error" role="alert"></p>
   </div>
 
-  <!-- The actual website (hidden until the password is correct) -->
+  <!-- Selve nettsiden (skjult til passordet er riktig) -->
   <div id="site">
-    <div class="marquee"><span>*** WELCOME *** SANDVIKEN BRYGGERI *** WELCOME ***</span></div>
-    <p><span class="blink">NEW!</span> This website is under construction</p>
-    <div class="box">
-      <p>Put your content here.</p>
-    </div>
-    <p>You are visitor number <span class="counter">000042</span></p>
-    <hr style="width:20rem; max-width:100%; border-color: var(--front);">
-    <p><a href="#">Home</a> | <a href="#">Beer</a> | <a href="#">Contact</a></p>
+    <p>Nettsiden er under bygging</p>
+    <p><a href="https://www.instagram.com/sandvikenbryggeri/">Instagram</a></p>
   </div>
 
   <script>
-    var PASSWORD = "changeme"; // <-- put your own password here
+    var PASSWORD = "fyresyre"; // <-- skriv inn ditt eget passord her
 
-    // ---- Build the extruded 3D text out of stacked copies ----
+    // ---- Bygg 3D-teksten av stablede kopier ----
     var TEXT = "Sandviken Bryggeri";
-    var LAYERS = 36;        // more layers = thicker letters
-    var STEP = 2.2;         // px between layers
+    var LAYERS = 36;        // flere lag = tykkere bokstaver
+    var STEP = 0.014;       // em mellom lagene (skalerer med tekststørrelsen)
     var logo = document.getElementById("logo");
     var half = (LAYERS * STEP) / 2;
 
@@ -125,15 +127,16 @@
       s.className = "layer" + (i === 0 ? "" : " back");
       s.setAttribute("aria-hidden", "true");
       s.textContent = TEXT;
-      s.style.transform = "translateZ(" + (half - i * STEP) + "px)";
-      // front face bright, sides fade to dark
+      s.style.transform = "translateZ(" + (half - i * STEP) + "em)";
+      // forsiden lys, sidene blir mørkere
       var pct = Math.round(100 - (i / (LAYERS - 1)) * 100);
       s.style.color = i === 0 ? "var(--front)"
         : "color-mix(in srgb, var(--front) " + Math.round(pct * 0.55) + "%, var(--side))";
       logo.appendChild(s);
     }
 
-    // ---- Password check ----
+    // ---- Passordsjekk ----
+    var stage = document.getElementById("stage");
     var gate = document.getElementById("gate");
     var site = document.getElementById("site");
     var input = document.getElementById("pw");
@@ -141,10 +144,12 @@
 
     function tryEnter() {
       if (input.value === PASSWORD) {
+        // bytt hele skjermen: skjul logo og passordfelt, vis bare byggemeldingen
+        stage.style.display = "none";
         gate.style.display = "none";
         site.style.display = "block";
       } else {
-        error.textContent = "WRONG PASSWORD";
+        error.textContent = "FEIL PASSORD";
         input.value = "";
         input.focus();
       }

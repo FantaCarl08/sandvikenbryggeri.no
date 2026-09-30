@@ -85,6 +85,8 @@
     .topp { 
       position: relative; 
       z-index: 10; 
+      width: 100%;
+      max-width: 44rem;
       margin-bottom: var(--space-topp-grid); /* Betydelig økt mellomrom til produktboksene */
       font-size: 0.95rem;
     }
@@ -100,11 +102,43 @@
       margin-top: 0.6rem !important;
     }
 
+    .topp-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .topp-nav p { margin: 0; }
+    .cart-trigger {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--front);
+      font: inherit;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .cart-trigger:hover:not(:disabled) {
+      opacity: 0.85;
+      text-decoration: underline;
+    }
+    .cart-trigger:focus-visible {
+      outline: 2px solid var(--side);
+      outline-offset: 3px;
+    }
+    .cart-trigger:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
     .grid {
       position: relative;
       z-index: 10;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
+      justify-items: center;
       gap: var(--grid-gap);
       width: 100%;
       max-width: 44rem;
@@ -117,6 +151,10 @@
     .shopify-buy-frame {
       width: 100% !important;
       margin: 0 !important;
+    }
+
+    .shopify-buy-frame--toggle {
+      display: none !important;
     }
 
     #product-component-1790770026577,
@@ -218,7 +256,12 @@
   </div>
 
   <div class="topp">
-    <p><a href="index.html">&larr; Tilbake</a></p>
+    <div class="topp-nav">
+      <p><a href="index.html">&larr; Tilbake</a></p>
+      <button class="cart-trigger" id="cart-trigger" type="button" disabled aria-label="Handlekurv, 0 varer">
+        <span>Handlekurv (</span><span class="cart-count" id="cart-count" aria-live="polite">0</span><span>)</span>
+      </button>
+    </div>
     <p class="snart">OFFISIELL MERCH</p>
   </div>
 
@@ -273,7 +316,7 @@
               <option>Størrelse: Large</option>
               <option>Størrelse: XL</option>
             </select>
-            <button class="mock-btn">COP</button>
+            <button class="mock-btn">LEGG I HANDLEKURV</button>
           </div>
         `;
       }
@@ -290,7 +333,7 @@
               <option selected>Størrelse: Large</option>
               <option>Størrelse: XL</option>
             </select>
-            <button class="mock-btn">COP</button>
+            <button class="mock-btn">LEGG I HANDLEKURV</button>
           </div>
         `;
       }
@@ -417,7 +460,7 @@
                 "margin-top": "0.25rem"
               }
             },
-            "buttonDestination": "checkout",
+            "buttonDestination": "cart",
             "contents": {
               "img": true,
               "title": true,
@@ -425,13 +468,14 @@
               "options": true
             },
             "text": {
-              "button": "COP"
+              "button": "LEGG I HANDLEKURV"
             },
             "googleFonts": [
               "Montserrat"
             ]
           },
           "cart": {
+            "popup": false,
             "styles": {
               "button": {
                 "font-family": "Montserrat, sans-serif",
@@ -442,16 +486,27 @@
                 },
                 "border-radius": "0px"
               }
+            },
+            "text": {
+              "title": "Handlekurv",
+              "empty": "Handlekurven er tom",
+              "button": "Betal",
+              "total": "Delsum",
+              "notice": ""
             }
           },
           "toggle": {
             "styles": {
               "toggle": {
+                "display": "none",
                 "background-color": "#a3307a",
                 ":hover": {
                   "background-color": "#8e2568"
                 }
               }
+            },
+            "text": {
+              "count": "Handlekurv (%count%)"
             }
           }
         }
@@ -477,6 +532,58 @@
             id: '15399682769175',
             node: node2
           }));
+        }
+
+        var cartButton = document.getElementById("cart-trigger");
+        var cartCount = document.getElementById("cart-count");
+        if (cartButton && cartCount) {
+          cartButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            if (!ui.cartOpen) ui.openCart();
+          });
+
+          var toggleFrameObserver;
+          function syncCartCount() {
+            var toggleFrame = document.querySelector('iframe[name="frame-toggle"]');
+            if (!toggleFrame) return false;
+
+            var countNode = toggleFrame.contentDocument
+              && toggleFrame.contentDocument.querySelector(".shopify-buy__cart-toggle__count");
+            if (!countNode) {
+              if (toggleFrame.dataset.cartCountObserved !== "true" && toggleFrame.contentDocument) {
+                toggleFrame.dataset.cartCountObserved = "true";
+                var countNodeObserver = new MutationObserver(function () {
+                  if (syncCartCount()) countNodeObserver.disconnect();
+                });
+                countNodeObserver.observe(toggleFrame.contentDocument, {
+                  childList: true,
+                  subtree: true
+                });
+              }
+              return false;
+            }
+
+            function updateCartCount() {
+              var count = countNode.textContent.trim() || "0";
+              cartCount.textContent = count;
+              cartButton.setAttribute("aria-label", "Handlekurv, " + count
+                + (count === "1" ? " vare" : " varer"));
+            }
+
+            updateCartCount();
+            cartButton.disabled = false;
+            new MutationObserver(updateCartCount).observe(countNode, {
+              childList: true,
+              characterData: true,
+              subtree: true
+            });
+            toggleFrameObserver.disconnect();
+            return true;
+          }
+
+          toggleFrameObserver = new MutationObserver(syncCartCount);
+          toggleFrameObserver.observe(document.body, { childList: true, subtree: true });
+          syncCartCount();
         }
       });
     }

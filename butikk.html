@@ -516,9 +516,44 @@
         var node1 = document.getElementById('product-component-1790770026577');
         var node2 = document.getElementById('product-component-1790771795558');
 
+        function syncInitialVariantImage(productNode) {
+          var productObserver;
+          var frameObserver;
+
+          function applySelectedColor() {
+            var frame = productNode.querySelector("iframe");
+            var frameDocument = frame && frame.contentDocument;
+            if (!frameDocument) return false;
+
+            var colorSelect = frameDocument.querySelector("select");
+            if (!colorSelect) {
+              if (!frameObserver) {
+                frameObserver = new MutationObserver(function () {
+                  if (applySelectedColor()) {
+                    frameObserver.disconnect();
+                    productObserver.disconnect();
+                  }
+                });
+                frameObserver.observe(frameDocument, { childList: true, subtree: true });
+              }
+              return false;
+            }
+
+            colorSelect.dispatchEvent(new Event("change", { bubbles: true }));
+            return true;
+          }
+
+          productObserver = new MutationObserver(function () {
+            if (applySelectedColor()) productObserver.disconnect();
+          });
+          productObserver.observe(productNode, { childList: true, subtree: true });
+          if (applySelectedColor()) productObserver.disconnect();
+        }
+
         if (node1) {
           node1.dataset.rendered = "true";
           node1.innerHTML = "";
+          syncInitialVariantImage(node1);
           ui.createComponent('product', Object.assign({}, sharedProductConfig, {
             id: '15399657373975',
             node: node1
@@ -528,6 +563,7 @@
         if (node2) {
           node2.dataset.rendered = "true";
           node2.innerHTML = "";
+          syncInitialVariantImage(node2);
           ui.createComponent('product', Object.assign({}, sharedProductConfig, {
             id: '15399682769175',
             node: node2

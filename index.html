@@ -65,7 +65,9 @@
     input, button { font-size: 1rem; }        /* standard nettleserutseende, med vilje */
     #error { color: var(--front); font-weight: bold; min-height: 1.4em; margin: 0.6rem 0 0; }
     #gate, #site { position: relative; z-index: 10; }
-    #site { display: none; }
+    #site { display: none; width: 100%; max-width: 32rem; }
+    #spilleliste { display: none; margin: 0 auto 1rem; }
+    #spilleliste iframe { display: block; width: 100%; border: 0; }
     a { color: var(--front); }
 
     .marquee { width: 100%; max-width: 34rem; overflow: hidden; white-space: nowrap; margin: 0.5rem auto; border-top: 2px dashed var(--front); border-bottom: 2px dashed var(--front); }
@@ -109,6 +111,10 @@
   <!-- Selve nettsiden (skjult til passordet er riktig) -->
   <div id="site">
     <p>Nettsiden er under bygging</p>
+    <p><a href="butikk.html">Butikk</a></p>
+    <p><a href="#">Fotoalbum</a></p>
+    <p><a href="#" id="spilleliste-lenke" aria-expanded="false" aria-controls="spilleliste">Playlist</a></p>
+    <div id="spilleliste"></div>
     <p><a href="https://www.instagram.com/sandvikenbryggeri/">Instagram</a></p>
   </div>
 
@@ -154,6 +160,22 @@
         input.focus();
       }
     }
+    // ---- Playlist: vises når man trykker, skjules ved nytt trykk ----
+    var spLenke = document.getElementById("spilleliste-lenke");
+    var spBoks = document.getElementById("spilleliste");
+    spLenke.addEventListener("click", function (e) {
+      e.preventDefault();
+      var apen = spBoks.style.display === "block";
+      if (!apen && !spBoks.firstChild) {
+        spBoks.innerHTML = '<iframe data-testid="embed-iframe" style="border-radius:12px" ' +
+          'src="https://open.spotify.com/embed/playlist/6XuxQ5jmpUDzoEIB5U0tMO?utm_source=generator&si=3e41db8eced04479" ' +
+          'width="100%" height="352" frameBorder="0" allowfullscreen="" ' +
+          'allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+      }
+      spBoks.style.display = apen ? "none" : "block";
+      spLenke.setAttribute("aria-expanded", apen ? "false" : "true");
+    });
+
     document.getElementById("enter").addEventListener("click", tryEnter);
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") tryEnter();

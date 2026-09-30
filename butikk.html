@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Butikk – Sandviken Bryggeri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --front: #a3307a;  /* mystisk rød/lilla, forsiden av bokstavene */
+      --side:  #3a0d2b;  /* mørk lilla, bak/sider av bokstavene */
+      --white: #ffffff;
+      --bg:    #000000;
+      --stretch: 1.8;    /* hvor høy logoen er strukket */
+    }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: "Times New Roman", Times, serif;   /* søppel med vilje */
+      font-size: 18px;
+      text-align: center;
+      padding: 1rem;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    a { color: var(--front); }
+
+    /* ---------- 3D-logo som spinner ---------- */
+    #stage { perspective: 2000px; padding: 2.5rem 0 3.5rem; max-width: 100%; }
+    #logo {
+      position: relative;
+      display: inline-block;
+      transform-style: preserve-3d;
+      font-family: Anton, Impact, "Arial Narrow", sans-serif;
+      font-size: clamp(1.6rem, 5vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      /* jevn, sakte spinn rundt sitt eget senter */
+      animation: spin 14s linear infinite;
+    }
+    #logo .layer { display: block; }
+    #logo .layer.back { position: absolute; left: 0; top: 0; }
+    @keyframes spin {
+      from { transform: rotateY(0deg) scaleY(var(--stretch)); }
+      to   { transform: rotateY(360deg) scaleY(var(--stretch)); }
+    }
+
+    /* ---------- butikk ---------- */
+    .topp { position: relative; z-index: 10; }
+    h2 { font-weight: normal; letter-spacing: 0.3em; text-transform: uppercase; margin: 0.5rem 0; }
+    .snart { color: var(--front); font-weight: bold; margin: 0 0 2rem; }
+
+    .grid {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem 2rem;
+      max-width: 62rem;
+      margin: 0 auto 3rem;
+      text-align: left;
+    }
+    .bilde {
+      aspect-ratio: 6 / 5;
+      border: 4px ridge var(--front);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--front);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-align: center;
+    }
+    .navn { margin: 0.7rem 0 0; }
+    .pris { margin: 0.1rem 0 0; font-family: "Courier New", monospace; }
+
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 1.8rem 1rem; }
+    }
+    @media (max-width: 600px) {
+      body { font-size: 16px; padding: 0.75rem; }
+      #logo { font-size: 8vw; }
+      #stage { padding: 1.8rem 0 2.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #logo { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D-logo som spinner -->
+  <div id="stage">
+    <div id="logo" role="img" aria-label="Sandviken Bryggeri"></div>
+  </div>
+
+  <div class="topp">
+    <p><a href="index.html">&larr; Tilbake</a></p>
+    <h2>Butikk</h2>
+    <p class="snart">Produkter kommer snart</p>
+  </div>
+
+  <!-- Plassholdere: bytt ut med ekte produkter -->
+  <div class="grid">
+    <div class="produkt">
+      <div class="bilde">Bilde kommer</div>
+      <p class="navn">Produkt 1</p>
+      <p class="pris">kr 000</p>
+    </div>
+    <div class="produkt">
+      <div class="bilde">Bilde kommer</div>
+      <p class="navn">Produkt 2</p>
+      <p class="pris">kr 000</p>
+    </div>
+    <div class="produkt">
+      <div class="bilde">Bilde kommer</div>
+      <p class="navn">Produkt 3</p>
+      <p class="pris">kr 000</p>
+    </div>
+    <div class="produkt">
+      <div class="bilde">Bilde kommer</div>
+      <p class="navn">Produkt 4</p>
+      <p class="pris">kr 000</p>
+    </div>
+    <div class="produkt">
+      <div class="bilde">Bilde kommer</div>
+      <p class="navn">Produkt 5</p>
+      <p class="pris">kr 000</p>
+    </div>
+  </div>
+
+  <script>
+    // ---- Bygg 3D-teksten av stablede kopier ----
+    var TEXT = "Sandviken Bryggeri";
+    var LAYERS = 36;        // flere lag = tykkere bokstaver
+    var STEP = 0.014;       // em mellom lagene (skalerer med tekststørrelsen)
+    var logo = document.getElementById("logo");
+    var half = (LAYERS * STEP) / 2;
+
+    for (var i = 0; i < LAYERS; i++) {
+      var s = document.createElement("span");
+      s.className = "layer" + (i === 0 ? "" : " back");
+      s.setAttribute("aria-hidden", "true");
+      s.textContent = TEXT;
+      s.style.transform = "translateZ(" + (half - i * STEP) + "em)";
+      // forsiden lys, sidene blir mørkere
+      var pct = Math.round(100 - (i / (LAYERS - 1)) * 100);
+      s.style.color = i === 0 ? "var(--front)"
+        : "color-mix(in srgb, var(--front) " + Math.round(pct * 0.55) + "%, var(--side))";
+      logo.appendChild(s);
+    }
+  </script>
+
+</body>
+</html>

@@ -2,95 +2,210 @@
 <html lang="nb">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Butikk – Sandviken Bryggeri</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --front: #a3307a;  /* mystisk rød/lilla, forsiden av bokstavene */
-      --side:  #3a0d2b;  /* mørk lilla, bak/sider av bokstavene */
-      --white: #ffffff;
-      --bg:    #000000;
-      --stretch: 1.8;    /* hvor høy logoen er strukket */
+      --front: #a3307a;  /* lilla aksentfarge */
+      --side:  #5a1843;  /* mørk lilla 3D-skygge */
+      --text:  #111111;  /* mørk tekst */
+      --bg:    #ffffff;  /* ren hvit bakgrunn */
+      --stretch: 1.6;    /* vertikal strekk for 3D-logo */
+      --grid-gap: 1.5rem; /* enhetlig avstand for produkt-rutenett */
+      --space-stage-topp: 3.5rem; /* økt vertikal avstand fra BUTIKK-skilt til overskrift */
+      --space-topp-grid:  3.5rem; /* økt vertikal avstand fra OFFISIELL MERCH til produktbokser */
     }
-    html, body { margin: 0; min-height: 100%; }
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: "Times New Roman", Times, serif;   /* søppel med vilje */
-      font-size: 18px;
-      text-align: center;
-      padding: 1rem;
-      box-sizing: border-box;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-    a { color: var(--front); }
 
-    /* ---------- 3D-logo som spinner ---------- */
-    #stage { perspective: 2000px; padding: 3.5rem 0 4.5rem; max-width: 100%; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body { 
+      margin: 0; 
+      padding: 0;
+      min-height: 100vh; 
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Times New Roman", Times, serif;
+      font-size: 16px;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    body {
+      padding: 1.5rem 1rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    a { 
+      color: var(--front); 
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+    a:hover {
+      opacity: 0.85;
+      text-decoration: underline;
+    }
+
+    #stage { 
+      perspective: 2000px; 
+      padding: 0.75rem 0 0.5rem; 
+      width: 100%; 
+      margin-bottom: var(--space-stage-topp); /* Betydelig økt mellomrom til Tilbake / OFFISIELL MERCH */
+    }
+
     #logo {
       position: relative;
       display: inline-block;
       transform-style: preserve-3d;
-      font-family: Anton, Impact, "Arial Narrow", sans-serif;
-      font-size: clamp(2.5rem, 9vw, 7rem);
-      line-height: 1.05;
-      letter-spacing: 0.02em;
+      font-family: 'Anton', Impact, "Arial Narrow", sans-serif;
+      font-size: clamp(2.4rem, 8vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
       white-space: nowrap;
-      /* jevn, sakte spinn rundt sitt eget senter */
       animation: spin 9s linear infinite;
     }
     #logo .layer { display: block; }
     #logo .layer.back { position: absolute; left: 0; top: 0; }
+    
     @keyframes spin {
       from { transform: rotateY(0deg) scaleY(var(--stretch)); }
       to   { transform: rotateY(360deg) scaleY(var(--stretch)); }
     }
 
-    /* ---------- butikk ---------- */
-    .topp { position: relative; z-index: 10; }
-    h2 { font-weight: normal; letter-spacing: 0.3em; text-transform: uppercase; margin: 0.5rem 0; }
-    .snart { color: var(--front); font-weight: bold; margin: 0 0 2rem; }
+    .topp { 
+      position: relative; 
+      z-index: 10; 
+      margin-bottom: var(--space-topp-grid); /* Betydelig økt mellomrom til produktboksene */
+      font-size: 0.95rem;
+    }
+    .topp p {
+      margin: 0.2rem 0;
+    }
+    .snart { 
+      color: var(--front); 
+      font-weight: bold; 
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      margin-top: 0.6rem !important;
+    }
 
     .grid {
       position: relative;
       z-index: 10;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      max-width: 38rem;
-      margin: 0 auto 3rem;
+      gap: var(--grid-gap);
+      width: 100%;
+      max-width: 44rem;
+      margin: 0 auto;
       text-align: left;
+      align-items: start;
     }
-    .bilde {
+
+    /* Shopify Buy Button Overrides */
+    .shopify-buy-frame {
+      width: 100% !important;
+      margin: 0 !important;
+    }
+
+    #product-component-1790770026577,
+    #product-component-1790771795558 {
+      width: 100%;
+    }
+
+    .mock-card {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .mock-img-wrapper {
+      width: 100%;
       aspect-ratio: 1 / 1;
-      border: 1px solid var(--front);
+      border: 1px solid #a3307a;
+      overflow: hidden;
+      background: #fbf8fa;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--front);
-      font-size: 0.8em;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      text-align: center;
     }
-    .navn { margin: 0.8rem 0 0; color: var(--front); }
-    .pris { margin: 0.1rem 0 0; font-family: "Courier New", monospace; color: var(--front); }
-
-    a.produkt { display: block; color: inherit; text-decoration: none; }
-    a.produkt:hover .bilde, a.produkt:focus-visible .bilde { border-color: var(--white); }
-    a.produkt:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
+    .mock-img-wrapper svg {
+      width: 50%;
+      height: 50%;
+      opacity: 0.7;
+    }
+    .mock-title {
+      color: #111111;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 1.05rem;
+      font-weight: bold;
+      margin-top: 0.6rem;
+      margin-bottom: 0.2rem;
+      line-height: 1.2;
+    }
+    .mock-price {
+      color: #a3307a;
+      font-family: "Courier New", monospace;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .mock-select {
+      border: 1px solid #a3307a;
+      background-color: #ffffff;
+      color: #111111;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 0px;
+      margin-bottom: 0.6rem;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .mock-btn {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+      padding: 12px 0;
+      background-color: #a3307a;
+      border: none;
+      border-radius: 0px;
+      width: 100%;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background-color 0.2s ease;
+    }
+    .mock-btn:hover {
+      background-color: #8e2568;
+    }
 
     @media (max-width: 600px) {
-      body { font-size: 16px; padding: 0.75rem; }
-      #logo { font-size: 16vw; }
-      #stage { padding: 2.5rem 0 3.5rem; }
-      .grid { gap: 1rem; }
+      body { padding: 1rem 0.75rem 2.5rem; }
+      #logo { font-size: 13vw; }
+      #stage { 
+        padding: 0.5rem 0 0.5rem; 
+        margin-bottom: 2.2rem; /* Tilpasset avstand på mobil */
+      }
+      .topp {
+        margin-bottom: 2.2rem; /* Tilpasset avstand på mobil */
+      }
+      :root { --grid-gap: 1.25rem; }
+      .grid { grid-template-columns: 1fr; gap: var(--grid-gap); }
     }
+
     @media (prefers-reduced-motion: reduce) {
       #logo { animation: none; }
     }
@@ -98,50 +213,275 @@
 </head>
 <body>
 
-  <!-- 3D-logo som spinner -->
   <div id="stage">
     <div id="logo" role="img" aria-label="Butikk"></div>
   </div>
 
   <div class="topp">
     <p><a href="index.html">&larr; Tilbake</a></p>
-    <p class="snart">Produkter kommer snart</p>
+    <p class="snart">OFFISIELL MERCH</p>
   </div>
 
-  <!-- Plassholdere: bytt ut med ekte produkter -->
   <div class="grid">
-    <a class="produkt" href="produkt.html?id=1">
-      <div class="bilde"></div>
-      <p class="navn">Produkt 1</p>
-      <p class="pris">kr 000</p>
-    </a>
-    <a class="produkt" href="produkt.html?id=2">
-      <div class="bilde"></div>
-      <p class="navn">Produkt 2</p>
-      <p class="pris">kr 000</p>
-    </a>
+    <!-- Produkt 1 Container -->
+    <div id="product-component-1790770026577"></div>
+
+    <!-- Produkt 2 Container -->
+    <div id="product-component-1790771795558"></div>
   </div>
 
   <script>
-    // ---- Bygg 3D-teksten av stablede kopier ----
-    var TEXT = "Butikk";
-    var LAYERS = 36;        // flere lag = tykkere bokstaver
-    var STEP = 0.014;       // em mellom lagene (skalerer med tekststørrelsen)
-    var logo = document.getElementById("logo");
-    var half = (LAYERS * STEP) / 2;
+    (function init3DLogo() {
+      var TEXT = "Butikk";
+      var LAYERS = 32;
+      var STEP = 0.013;
+      var logo = document.getElementById("logo");
+      if (!logo) return;
+      var half = (LAYERS * STEP) / 2;
 
-    for (var i = 0; i < LAYERS; i++) {
-      var s = document.createElement("span");
-      s.className = "layer" + (i === 0 ? "" : " back");
-      s.setAttribute("aria-hidden", "true");
-      s.textContent = TEXT;
-      s.style.transform = "translateZ(" + (half - i * STEP) + "em)";
-      // forsiden lys, sidene blir mørkere
-      var pct = Math.round(100 - (i / (LAYERS - 1)) * 100);
-      s.style.color = i === 0 ? "var(--front)"
-        : "color-mix(in srgb, var(--front) " + Math.round(pct * 0.55) + "%, var(--side))";
-      logo.appendChild(s);
+      for (var i = 0; i < LAYERS; i++) {
+        var s = document.createElement("span");
+        s.className = "layer" + (i === 0 ? "" : " back");
+        s.setAttribute("aria-hidden", "true");
+        s.textContent = TEXT;
+        s.style.transform = "translateZ(" + (half - i * STEP) + "em)";
+        var pct = Math.round(100 - (i / (LAYERS - 1)) * 100);
+        s.style.color = i === 0 ? "var(--front)"
+          : "color-mix(in srgb, var(--front) " + Math.round(pct * 0.55) + "%, var(--side))";
+        logo.appendChild(s);
+      }
+    })();
+  </script>
+
+  <script>
+    function renderPreviewCards() {
+      var p1 = document.getElementById('product-component-1790770026577');
+      var p2 = document.getElementById('product-component-1790771795558');
+
+      var tshirtSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#a3307a" stroke-width="1.5"><path d="M16 3L20 7L16 11L14 8V21H10V8L8 11L4 7L8 3C9 4.5 11 5 12 5C13 5 15 4.5 16 3Z"/></svg>';
+      var hoodieSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#a3307a" stroke-width="1.5"><path d="M4 8L9 3C11 4.5 13 4.5 15 3L20 8L17 11V21H7V11L4 8Z"/><path d="M12 5V21"/></svg>';
+
+      if (p1 && !p1.dataset.rendered) {
+        p1.innerHTML = `
+          <div class="mock-card">
+            <div class="mock-img-wrapper">${tshirtSVG}</div>
+            <div class="mock-title">Sandviken Bryggeri T-Skjorte</div>
+            <div class="mock-price">350 kr</div>
+            <select class="mock-select">
+              <option>Størrelse: Small</option>
+              <option selected>Størrelse: Medium</option>
+              <option>Størrelse: Large</option>
+              <option>Størrelse: XL</option>
+            </select>
+            <button class="mock-btn">COP</button>
+          </div>
+        `;
+      }
+
+      if (p2 && !p2.dataset.rendered) {
+        p2.innerHTML = `
+          <div class="mock-card">
+            <div class="mock-img-wrapper">${hoodieSVG}</div>
+            <div class="mock-title">Sandviken Bryggeri Hoodie</div>
+            <div class="mock-price">650 kr</div>
+            <select class="mock-select">
+              <option>Størrelse: Small</option>
+              <option>Størrelse: Medium</option>
+              <option selected>Størrelse: Large</option>
+              <option>Størrelse: XL</option>
+            </select>
+            <button class="mock-btn">COP</button>
+          </div>
+        `;
+      }
     }
+
+    // Render fallback cards instantly
+    renderPreviewCards();
+  </script>
+
+  <script type="text/javascript">
+  /*<![CDATA[*/
+  (function () {
+    var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+    if (window.ShopifyBuy) {
+      if (window.ShopifyBuy.UI) {
+        ShopifyBuyInit();
+      } else {
+        loadScript();
+      }
+    } else {
+      loadScript();
+    }
+    
+    function loadScript() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = scriptURL;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+      script.onload = ShopifyBuyInit;
+    }
+
+    function ShopifyBuyInit() {
+      var client = ShopifyBuy.buildClient({
+        domain: 'bkdaii-ce.myshopify.com',
+        storefrontAccessToken: 'c8440fb8968d85147e68c0efa66ee29a',
+      });
+
+      var sharedProductConfig = {
+        moneyFormat: '%7B%7Bamount_with_space_separator%7D%7D%20kr',
+        options: {
+          "product": {
+            "styles": {
+              "product": {
+                "@media (min-width: 601px)": {
+                  "max-width": "100%",
+                  "margin-left": "0px",
+                  "margin-bottom": "0px"
+                },
+                "width": "100%",
+                "max-width": "100%",
+                "text-align": "left",
+                "margin-left": "0px",
+                "margin-bottom": "0px"
+              },
+              "img": {
+                "border": "1px solid #a3307a",
+                "border-radius": "0px",
+                "margin-bottom": "0px",
+                "aspect-ratio": "1 / 1",
+                "object-fit": "cover",
+                "width": "100%",
+                "height": "100%",
+                "display": "block",
+                "box-sizing": "border-box"
+              },
+              "imgWrapper": {
+                "aspect-ratio": "1 / 1",
+                "width": "100%",
+                "overflow": "hidden",
+                "margin-bottom": "0px"
+              },
+              "title": {
+                "color": "#111111",
+                "font-family": "\"Times New Roman\", Times, serif",
+                "font-size": "1.05rem",
+                "font-weight": "bold",
+                "margin-top": "0.6rem",
+                "margin-bottom": "0.2rem",
+                "line-height": "1.2"
+              },
+              "price": {
+                "color": "#a3307a",
+                "font-family": "\"Courier New\", monospace",
+                "font-size": "1rem",
+                "font-weight": "bold",
+                "margin-bottom": "0.5rem"
+              },
+              "option": {
+                "color": "#111111",
+                "font-family": "\"Times New Roman\", Times, serif",
+                "font-size": "0.85rem",
+                "margin-bottom": "0.25rem"
+              },
+              "select": {
+                "border": "1px solid #a3307a",
+                "background-color": "#ffffff",
+                "color": "#111111",
+                "width": "100%",
+                "padding": "8px 10px",
+                "border-radius": "0px",
+                "margin-bottom": "0.6rem",
+                "font-family": "\"Times New Roman\", Times, serif",
+                "font-size": "0.9rem",
+                "box-sizing": "border-box",
+                "outline": "none"
+              },
+              "button": {
+                "font-family": "Montserrat, sans-serif",
+                "font-weight": "700",
+                "font-size": "14px",
+                "color": "#ffffff",
+                "letter-spacing": "0.05em",
+                "padding-top": "12px",
+                "padding-bottom": "12px",
+                "background-color": "#a3307a",
+                ":hover": {
+                  "background-color": "#8e2568"
+                },
+                ":focus": {
+                  "background-color": "#8e2568"
+                },
+                "border-radius": "0px",
+                "width": "100%",
+                "margin-top": "0.25rem"
+              }
+            },
+            "buttonDestination": "checkout",
+            "contents": {
+              "img": true,
+              "title": true,
+              "price": true,
+              "options": true
+            },
+            "text": {
+              "button": "COP"
+            },
+            "googleFonts": [
+              "Montserrat"
+            ]
+          },
+          "cart": {
+            "styles": {
+              "button": {
+                "font-family": "Montserrat, sans-serif",
+                "font-weight": "700",
+                "background-color": "#a3307a",
+                ":hover": {
+                  "background-color": "#8e2568"
+                },
+                "border-radius": "0px"
+              }
+            }
+          },
+          "toggle": {
+            "styles": {
+              "toggle": {
+                "background-color": "#a3307a",
+                ":hover": {
+                  "background-color": "#8e2568"
+                }
+              }
+            }
+          }
+        }
+      };
+
+      ShopifyBuy.UI.onReady(client).then(function (ui) {
+        var node1 = document.getElementById('product-component-1790770026577');
+        var node2 = document.getElementById('product-component-1790771795558');
+
+        if (node1) {
+          node1.dataset.rendered = "true";
+          node1.innerHTML = "";
+          ui.createComponent('product', Object.assign({}, sharedProductConfig, {
+            id: '15399657373975',
+            node: node1
+          }));
+        }
+
+        if (node2) {
+          node2.dataset.rendered = "true";
+          node2.innerHTML = "";
+          ui.createComponent('product', Object.assign({}, sharedProductConfig, {
+            id: '15399682769175',
+            node: node2
+          }));
+        }
+      });
+    }
+  })();
+  /*]]>*/
   </script>
 
 </body>

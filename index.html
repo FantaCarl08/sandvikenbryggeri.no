@@ -91,6 +91,10 @@
       #logo, .marquee span, .blink { animation: none; }
       .marquee span { padding-left: 0; }
     }
+
+    /* lesbarhet oppå den animerte bakgrunnen */
+    a, label, p, h2 { text-shadow: 0 0 4px #000, 0 0 10px #000; }
+    .bilde { background: rgba(0, 0, 0, 0.55); text-shadow: 0 0 4px #000; }
   </style>
 </head>
 <body>
@@ -118,6 +122,7 @@
     <p><a href="https://www.instagram.com/sandvikenbryggeri/">Instagram</a></p>
   </div>
 
+  <script src="bakgrunn.js"></script>
   <script>
     var PASSWORD = "fyresyre"; // <-- skriv inn ditt eget passord her
 
@@ -148,18 +153,29 @@
     var input = document.getElementById("pw");
     var error = document.getElementById("error");
 
+    function visMeny() {
+      // bytt hele skjermen: skjul logo og passordfelt, vis bare menyen
+      stage.style.display = "none";
+      gate.style.display = "none";
+      site.style.display = "block";
+    }
+
     function tryEnter() {
       if (input.value === PASSWORD) {
-        // bytt hele skjermen: skjul logo og passordfelt, vis bare byggemeldingen
-        stage.style.display = "none";
-        gate.style.display = "none";
-        site.style.display = "block";
+        try { sessionStorage.setItem("innlogget", "ja"); } catch (e) {}
+        visMeny();
       } else {
         error.textContent = "FEIL PASSORD";
         input.value = "";
         input.focus();
       }
     }
+
+    // Allerede logget inn i denne fanen? Da går vi rett til menyen.
+    try {
+      if (sessionStorage.getItem("innlogget") === "ja") visMeny();
+    } catch (e) {}
+
     // ---- Playlist: vises når man trykker, skjules ved nytt trykk ----
     var spLenke = document.getElementById("spilleliste-lenke");
     var spBoks = document.getElementById("spilleliste");

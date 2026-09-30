@@ -30,13 +30,13 @@
     a { color: var(--front); }
 
     /* ---------- 3D-logo som spinner ---------- */
-    #stage { perspective: 2000px; padding: 2.5rem 0 3.5rem; max-width: 100%; }
+    #stage { perspective: 2000px; padding: 3.5rem 0 4.5rem; max-width: 100%; }
     #logo {
       position: relative;
       display: inline-block;
       transform-style: preserve-3d;
       font-family: Anton, Impact, "Arial Narrow", sans-serif;
-      font-size: clamp(1.6rem, 5vw, 4.5rem);
+      font-size: clamp(2.5rem, 9vw, 7rem);
       line-height: 1.05;
       letter-spacing: 0.02em;
       text-transform: uppercase;
@@ -60,90 +60,67 @@
       position: relative;
       z-index: 10;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem 2rem;
-      max-width: 62rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      max-width: 38rem;
       margin: 0 auto 3rem;
       text-align: left;
     }
     .bilde {
-      aspect-ratio: 6 / 5;
-      border: 4px ridge var(--front);
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--front);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--front);
-      font-weight: bold;
+      font-size: 0.8em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
       text-align: center;
     }
-    .navn { margin: 0.7rem 0 0; }
-    .pris { margin: 0.1rem 0 0; font-family: "Courier New", monospace; }
+    .navn { margin: 0.8rem 0 0; color: var(--front); }
+    .pris { margin: 0.1rem 0 0; font-family: "Courier New", monospace; color: var(--front); }
 
-    @media (max-width: 800px) {
-      .grid { grid-template-columns: repeat(2, 1fr); gap: 1.8rem 1rem; }
-    }
     @media (max-width: 600px) {
       body { font-size: 16px; padding: 0.75rem; }
-      #logo { font-size: 8vw; }
-      #stage { padding: 1.8rem 0 2.5rem; }
+      #logo { font-size: 16vw; }
+      #stage { padding: 2.5rem 0 3.5rem; }
+      .grid { gap: 1rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       #logo { animation: none; }
     }
-
-    /* lesbarhet oppå den animerte bakgrunnen */
-    a, label, p, h2 { text-shadow: 0 0 4px #000, 0 0 10px #000; }
-    .bilde { background: rgba(0, 0, 0, 0.55); text-shadow: 0 0 4px #000; }
   </style>
 </head>
 <body>
 
   <!-- 3D-logo som spinner -->
   <div id="stage">
-    <div id="logo" role="img" aria-label="Sandviken Bryggeri"></div>
+    <div id="logo" role="img" aria-label="Butikk"></div>
   </div>
 
   <div class="topp">
     <p><a href="index.html">&larr; Tilbake</a></p>
-    <h2>Butikk</h2>
     <p class="snart">Produkter kommer snart</p>
   </div>
 
   <!-- Plassholdere: bytt ut med ekte produkter -->
   <div class="grid">
     <div class="produkt">
-      <div class="bilde">Bilde kommer</div>
+      <div class="bilde"></div>
       <p class="navn">Produkt 1</p>
       <p class="pris">kr 000</p>
     </div>
     <div class="produkt">
-      <div class="bilde">Bilde kommer</div>
+      <div class="bilde"></div>
       <p class="navn">Produkt 2</p>
-      <p class="pris">kr 000</p>
-    </div>
-    <div class="produkt">
-      <div class="bilde">Bilde kommer</div>
-      <p class="navn">Produkt 3</p>
-      <p class="pris">kr 000</p>
-    </div>
-    <div class="produkt">
-      <div class="bilde">Bilde kommer</div>
-      <p class="navn">Produkt 4</p>
-      <p class="pris">kr 000</p>
-    </div>
-    <div class="produkt">
-      <div class="bilde">Bilde kommer</div>
-      <p class="navn">Produkt 5</p>
       <p class="pris">kr 000</p>
     </div>
   </div>
 
-  <script src="bakgrunn.js"></script>
   <script>
     // ---- Bygg 3D-teksten av stablede kopier ----
-    var TEXT = "Sandviken Bryggeri";
+    var TEXT = "Butikk";
     var LAYERS = 36;        // flere lag = tykkere bokstaver
     var STEP = 0.014;       // em mellom lagene (skalerer med tekststørrelsen)
     var logo = document.getElementById("logo");

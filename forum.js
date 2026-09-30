@@ -4,14 +4,35 @@
   var bodyInput = document.getElementById("forum-body");
   var websiteInput = document.getElementById("forum-website");
   var submitButton = document.getElementById("forum-submit");
+  var composeDialog = document.getElementById("compose-dialog");
+  var openComposeButton = document.getElementById("open-compose");
+  var closeComposeButton = document.getElementById("close-compose");
   var postList = document.getElementById("forum-posts");
   var emptyMessage = document.getElementById("forum-empty");
-  var loadMoreButton = document.getElementById("load-more");
   var statusMessage = document.getElementById("forum-status");
   var errorMessage = document.getElementById("forum-error");
-  var pageSize = 50;
-  var loadedCount = 0;
+  var pageSize = 500;
   var client;
+
+  function initForumLogo() {
+    var logo = document.getElementById("forum-title");
+    if (!logo) return;
+
+    var layerCount = 32;
+    var step = 0.013;
+    var half = (layerCount * step) / 2;
+    for (var index = 0; index < layerCount; index++) {
+      var layer = document.createElement("span");
+      layer.className = "layer" + (index === 0 ? "" : " back");
+      layer.setAttribute("aria-hidden", "true");
+      layer.textContent = "Forum";
+      layer.style.transform = "translateZ(" + (half - index * step) + "em)";
+      layer.style.color = index === 0 ? "var(--front)" : "var(--side)";
+      logo.appendChild(layer);
+    }
+  }
+
+  initForumLogo();
 
   function setStatus(message) {
     statusMessage.textContent = message;
@@ -47,36 +68,46 @@
     return item;
   }
 
-  async function loadPosts(append) {
+  async function loadPosts() {
     setError("");
-    if (!append) setStatus("Laster innlegg …");
+    setStatus("Laster innlegg …");
 
-    var start = append ? loadedCount : 0;
-    var result = await client
-      .from("forum_posts")
-      .select("id, author, body, created_at")
-      .order("created_at", { ascending: false })
-      .range(start, start + pageSize - 1);
+    var posts = [];
+    var offset = 0;
+    var result;
+    do {
+      result = await client
+        .from("forum_posts")
+        .select("id, author, body, created_at")
+        .order("created_at", { ascending: false })
+        .range(offset, offset + pageSize - 1);
 
-    if (result.error) {
-      setStatus("");
-      setError("Kunne ikke hente innlegg. Prøv å laste siden på nytt.");
-      return;
-    }
+      if (result.error) {
+        setStatus("");
+        setError("Kunne ikke hente innlegg. Prøv å laste siden på nytt.");
+        return;
+      }
 
-    if (!append) {
-      postList.replaceChildren();
-      loadedCount = 0;
-    }
+      posts = posts.concat(result.data);
+      offset += result.data.length;
+    } while (result.data.length === pageSize);
 
-    result.data.forEach(function (post) {
+    postList.replaceChildren();
+    posts.forEach(function (post) {
       postList.appendChild(createPostElement(post));
-      loadedCount += 1;
     });
-    emptyMessage.hidden = loadedCount > 0;
-    loadMoreButton.hidden = result.data.length < pageSize;
+    emptyMessage.hidden = posts.length > 0;
     setStatus("");
   }
+
+  openComposeButton.addEventListener("click", function () {
+    composeDialog.showModal();
+    authorInput.focus();
+  });
+  closeComposeButton.addEventListener("click", function () { composeDialog.close(); });
+  composeDialog.addEventListener("click", function (event) {
+    if (event.target === composeDialog) composeDialog.close();
+  });
 
   var config = window.FORUM_CONFIG || {};
   if (!window.supabase || !config.url || !config.anonKey) {
@@ -114,13 +145,8 @@
 
     form.reset();
     setStatus("Innlegget er publisert.");
-    await loadPosts(false);
-  });
-
-  loadMoreButton.addEventListener("click", function () {
-    loadMoreButton.disabled = true;
-    loadPosts(true).finally(function () {
-      loadMoreButton.disabled = false;
-    });
+    composeDialog.close();
+    await loadPosts();
+    setStatus("Innlegget er publisert.");
   });
 })();

@@ -29,4 +29,3 @@ create policy "Anyone can publish forum posts"
   );
 
 grant usage on schema public to anon;
-grant select, insert on table public.forum_posts to anon;

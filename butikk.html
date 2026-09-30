@@ -92,6 +92,10 @@
     @media (prefers-reduced-motion: reduce) {
       #logo { animation: none; }
     }
+
+    /* lesbarhet oppå den animerte bakgrunnen */
+    a, label, p, h2 { text-shadow: 0 0 4px #000, 0 0 10px #000; }
+    .bilde { background: rgba(0, 0, 0, 0.55); text-shadow: 0 0 4px #000; }
   </style>
 </head>
 <body>
@@ -136,6 +140,7 @@
     </div>
   </div>
 
+  <script src="bakgrunn.js"></script>
   <script>
     // ---- Bygg 3D-teksten av stablede kopier ----
     var TEXT = "Sandviken Bryggeri";

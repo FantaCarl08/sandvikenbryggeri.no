@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Produkt – Sandviken Bryggeri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --front: #a3307a;  /* mystisk rød/lilla, forsiden av bokstavene */
+      --side:  #3a0d2b;  /* mørk lilla, bak/sider av bokstavene */
+      --white: #ffffff;
+      --bg:    #000000;
+      --stretch: 1.8;    /* hvor høy logoen er strukket */
+    }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: "Times New Roman", Times, serif;   /* søppel med vilje */
+      font-size: 18px;
+      text-align: center;
+      padding: 1rem;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    a { color: var(--front); }
+
+    /* ---------- 3D-logo som spinner ---------- */
+    #stage {
+      perspective: 2000px;
+      font-size: clamp(2rem, 7vw, 5rem);
+      /* plass så den strukne teksten ikke stikker inn i innholdet under */
+      padding: calc((var(--stretch) - 1) * 0.525em + 0.3em) 0;
+      max-width: 100%;
+    }
+    #logo {
+      position: relative;
+      display: inline-block;
+      transform-style: preserve-3d;
+      font-family: Anton, Impact, "Arial Narrow", sans-serif;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      /* jevn spinn rundt sitt eget senter */
+      animation: spin 9s linear infinite;
+    }
+    #logo .layer { display: block; }
+    #logo .layer.back { position: absolute; left: 0; top: 0; }
+    @keyframes spin {
+      from { transform: rotateY(0deg) scaleY(var(--stretch)); }
+      to   { transform: rotateY(360deg) scaleY(var(--stretch)); }
+    }
+
+    /* ---------- produktside ---------- */
+    .side {
+      position: relative;
+      z-index: 10;
+      max-width: 62rem;
+      margin: 0 auto 3rem;
+      text-align: left;
+    }
+    .tilbake { margin: 0 0 1.5rem; }
+
+    .produkt-side {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    /* stort bilde til venstre */
+    .bilde {
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--front);
+      overflow: hidden;
+    }
+    .bilde img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* info til høyre, i monospace som på eksempelet */
+    .info { font-family: "Courier New", Courier, monospace; }
+    h1 { margin: 0; font-weight: normal; font-size: 1.7rem; line-height: 1.25; color: var(--front); }
+    .variant { margin: 0.2rem 0 0; font-weight: bold; }
+    .beskrivelse { margin: 1.6rem 0 0; font-size: 0.85em; line-height: 1.5; max-width: 26rem; }
+
+    .miniatyrer {
+      display: grid;
+      grid-template-columns: repeat(3, 4.5rem);
+      gap: 0.6rem;
+      margin: 2rem 0;
+    }
+    .mini {
+      aspect-ratio: 1 / 1;
+      padding: 0;
+      border: 1px solid var(--front);
+      background: transparent;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .mini img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .mini[aria-pressed="true"] { border-color: var(--white); }
+    .mini:hover { border-color: var(--white); }
+    .mini:focus-visible { outline: 1px solid var(--white); outline-offset: 2px; }
+
+    .pris { margin: 0 0 1.6rem; font-size: 2rem; color: var(--front); }
+
+    .neste { margin: 0 0 0.8rem; text-align: right; font-size: 0.85em; }
+
+    .knapper { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .knapp {
+      flex: 1 1 9rem;
+      box-sizing: border-box;
+      padding: 0.7rem 0.5rem;
+      font-family: inherit;
+      font-size: 0.95em;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      border: 1px solid var(--white);
+    }
+    .knapp.av { background: #8a8a8a; border-color: #8a8a8a; color: var(--bg); cursor: not-allowed; }
+    a.knapp { background: var(--bg); color: var(--white); }
+    a.knapp:hover, a.knapp:focus-visible { background: var(--white); color: var(--bg); }
+
+    .fotnote { margin: 1.4rem 0 0; font-size: 0.8em; line-height: 1.4; color: var(--front); }
+
+    @media (max-width: 760px) {
+      .produkt-side { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      body { font-size: 16px; padding: 0.75rem; }
+      #stage { font-size: 14vw; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #logo { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D-logo som spinner -->
+  <div id="stage">
+    <div id="logo" role="img" aria-label="Butikk"></div>
+  </div>
+
+  <main class="side">
+    <p class="tilbake"><a href="butikk.html">&larr; Tilbake til butikken</a></p>
+
+    <div class="produkt-side" id="produkt">
+      <div class="bilde" id="bilde"></div>
+
+      <div class="info">
+        <h1 id="navn"></h1>
+        <p class="variant" id="variant"></p>
+        <p class="beskrivelse" id="beskrivelse"></p>
+
+        <div class="miniatyrer" id="miniatyrer"></div>
+
+        <p class="pris" id="pris"></p>
+
+        <p class="neste"><a href="#" id="neste">neste produkt &rsaquo;</a></p>
+        <div class="knapper">
+          <span class="knapp av" aria-disabled="true">Kommer snart</span>
+          <a class="knapp" href="butikk.html">Fortsett å handle</a>
+        </div>
+
+        <p class="fotnote">* Informasjon om frakt kommer.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ---- Produktene ----
+    // Legg til flere produkter her. Nøkkelen (1, 2, ...) er tallet i lenken: produkt.html?id=1
+    // "bilder" er en liste med bilder, for eksempel ["bilder/a.jpg", "bilder/b.jpg"].
+    // Tomme "" gir tomme bokser. Første bilde vises stort.
+    var PRODUKTER = {
+      "1": {
+        navn: "Produkt 1",
+        variant: "Farge",
+        beskrivelse: "Beskrivelse kommer. Her kan du skrive om materiale, passform og detaljer.",
+        pris: "kr 000",
+        bilder: ["", "", ""]
+      },
+      "2": {
+        navn: "Produkt 2",
+        variant: "Farge",
+        beskrivelse: "Beskrivelse kommer. Her kan du skrive om materiale, passform og detaljer.",
+        pris: "kr 000",
+        bilder: ["", "", ""]
+      }
+    };
+
+    var id = new URLSearchParams(window.location.search).get("id") || "1";
+    var produkt = PRODUKTER[id];
+    var boks = document.getElementById("produkt");
+
+    if (!produkt) {
+      boks.innerHTML = "<p>Fant ikke produktet.</p>";
+      boks.style.display = "block";
+    } else {
+      document.title = produkt.navn + " – Sandviken Bryggeri";
+      document.getElementById("navn").textContent = produkt.navn;
+      document.getElementById("variant").textContent = produkt.variant;
+      document.getElementById("beskrivelse").textContent = produkt.beskrivelse;
+      document.getElementById("pris").textContent = produkt.pris;
+
+      // neste produkt (starter på nytt etter det siste)
+      var ider = Object.keys(PRODUKTER);
+      var neste = ider[(ider.indexOf(id) + 1) % ider.length];
+      var nesteLenke = document.getElementById("neste");
+      if (ider.length > 1) {
+        nesteLenke.href = "produkt.html?id=" + neste;
+      } else {
+        nesteLenke.parentNode.style.display = "none";
+      }
+
+      // stort bilde + miniatyrer som bytter bilde
+      var storBoks = document.getElementById("bilde");
+      var miniBoks = document.getElementById("miniatyrer");
+      var minier = [];
+
+      function visBilde(i) {
+        storBoks.textContent = "";
+        if (produkt.bilder[i]) {
+          var img = document.createElement("img");
+          img.src = produkt.bilder[i];
+          img.alt = produkt.navn;
+          storBoks.appendChild(img);
+        }
+        minier.forEach(function (m, j) {
+          m.setAttribute("aria-pressed", j === i ? "true" : "false");
+        });
+      }
+
+      produkt.bilder.forEach(function (src, i) {
+        var m = document.createElement("button");
+        m.type = "button";
+        m.className = "mini";
+        m.setAttribute("aria-label", "Vis bilde " + (i + 1));
+        if (src) {
+          var t = document.createElement("img");
+          t.src = src;
+          t.alt = "";
+          m.appendChild(t);
+        }
+        m.addEventListener("click", function () { visBilde(i); });
+        miniBoks.appendChild(m);
+        minier.push(m);
+      });
+      visBilde(0);
+    }
+
+    // ---- Bygg 3D-teksten av stablede kopier ----
+    var TEXT = "Butikk";
+    var LAYERS = 36;        // flere lag = tykkere bokstaver
+    var STEP = 0.014;       // em mellom lagene (skalerer med tekststørrelsen)
+    var logo = document.getElementById("logo");
+    var half = (LAYERS * STEP) / 2;
+
+    for (var i = 0; i < LAYERS; i++) {
+      var s = document.createElement("span");
+      s.className = "layer" + (i === 0 ? "" : " back");
+      s.setAttribute("aria-hidden", "true");
+      s.textContent = TEXT;
+      s.style.transform = "translateZ(" + (half - i * STEP) + "em)";
+      // forsiden lys, sidene blir mørkere
+      var pct = Math.round(100 - (i / (LAYERS - 1)) * 100);
+      s.style.color = i === 0 ? "var(--front)"
+        : "color-mix(in srgb, var(--front) " + Math.round(pct * 0.55) + "%, var(--side))";
+      logo.appendChild(s);
+    }
+  </script>
+
+</body>
+</html>

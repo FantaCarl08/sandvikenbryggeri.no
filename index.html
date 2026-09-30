@@ -13,7 +13,7 @@
       --side:  #3a0d2b;  /* mørk lilla, bak/sider av bokstavene */
       --white: #ffffff;
       --bg:    #000000;
-      --stretch: 1.8;    /* hvor høy logoen er strukket */
+      --stretch: 2.6;    /* hvor høy logoen er strukket */
     }
     html, body { margin: 0; min-height: 100%; }
     body {
@@ -33,22 +33,29 @@
     }
 
     /* ---------- 3D-logo som spinner ---------- */
-    #stage { perspective: 2000px; padding: 4rem 0 5.5rem; max-width: 100%; }
+    #midt { position: relative; }
+    #stage {
+      perspective: 2000px;
+      font-size: min(11vw, 18vh);   /* størrelsen på logoen: bredde- og høydebegrenset */
+      /* plass så den strukne teksten ikke stikker inn i passordfeltet */
+      padding: calc((var(--stretch) - 1) * 0.525em + 0.15em) 0;
+      max-width: 100%;
+    }
     #logo {
       position: relative;
       display: inline-block;
       transform-style: preserve-3d;
       font-family: Anton, Impact, "Arial Narrow", sans-serif;
-      font-size: clamp(2rem, 8vw, 9rem);
       line-height: 1.05;
       letter-spacing: 0.02em;
       text-transform: uppercase;
       white-space: nowrap;
+      text-align: center;
       /* jevn, sakte spinn rundt sitt eget senter */
-      animation: spin 14s linear infinite;
+      animation: spin 9s linear infinite;
     }
     #logo .layer { display: block; }
-    #logo .layer.back { position: absolute; left: 0; top: 0; }
+    #logo .layer.back { position: absolute; left: 0; top: 0; width: 100%; }
     @keyframes spin {
       from { transform: rotateY(0deg) scaleY(var(--stretch)); }
       to   { transform: rotateY(360deg) scaleY(var(--stretch)); }
@@ -65,6 +72,14 @@
     input, button { font-size: 1rem; }        /* standard nettleserutseende, med vilje */
     #error { color: var(--front); font-weight: bold; min-height: 1.4em; margin: 0.6rem 0 0; }
     #gate, #site { position: relative; z-index: 10; }
+    #midt #gate {
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 100vw;
+    }
     #site { display: none; width: 100%; max-width: 32rem; }
     #spilleliste { display: none; margin: 0 auto 1rem; }
     #spilleliste iframe { display: block; width: 100%; border: 0; }
@@ -80,9 +95,8 @@
     .counter { font-family: "Courier New", monospace; background: var(--white); color: var(--bg); padding: 0 0.4rem; letter-spacing: 0.15em; }
 
     @media (max-width: 600px) {
+      :root { --stretch: 3.4; }   /* ekstra høy på smale skjermer */
       body { font-size: 16px; padding: 0.75rem; }
-      #logo { font-size: 10.5vw; }
-      #stage { padding: 2.5rem 0 3.5rem; }
       input { width: 10rem; }
       .box { padding: 0.6rem 0.8rem; }
     }
@@ -91,25 +105,23 @@
       #logo, .marquee span, .blink { animation: none; }
       .marquee span { padding-left: 0; }
     }
-
-    /* lesbarhet oppå den animerte bakgrunnen */
-    a, label, p, h2 { text-shadow: 0 0 4px #000, 0 0 10px #000; }
-    .bilde { background: rgba(0, 0, 0, 0.55); text-shadow: 0 0 4px #000; }
   </style>
 </head>
 <body>
 
-  <!-- 3D-logo som spinner -->
-  <div id="stage">
-    <div id="logo" role="img" aria-label="Sandviken Bryggeri"></div>
-  </div>
+  <div id="midt">
+    <!-- 3D-logo som spinner (midt på skjermen) -->
+    <div id="stage">
+      <div id="logo" role="img" aria-label="Sandviken Bryggeri"></div>
+    </div>
 
-  <!-- Passordsperre -->
-  <div id="gate">
-    <label for="pw">Skriv inn passord:</label>
-    <input type="password" id="pw" autocomplete="off" autofocus>
-    <button id="enter">OK</button>
-    <p id="error" role="alert"></p>
+    <!-- Passordsperre (rett under logoen) -->
+    <div id="gate">
+      <label for="pw">Skriv inn passord:</label>
+      <input type="password" id="pw" autocomplete="off" autofocus>
+      <button id="enter">OK</button>
+      <p id="error" role="alert"></p>
+    </div>
   </div>
 
   <!-- Selve nettsiden (skjult til passordet er riktig) -->
@@ -120,9 +132,9 @@
     <p><a href="#" id="spilleliste-lenke" aria-expanded="false" aria-controls="spilleliste">Playlist</a></p>
     <div id="spilleliste"></div>
     <p><a href="https://www.instagram.com/sandvikenbryggeri/">Instagram</a></p>
+    <p><a href="#" id="loggut">Logg ut</a></p>
   </div>
 
-  <script src="bakgrunn.js"></script>
   <script>
     var PASSWORD = "fyresyre"; // <-- skriv inn ditt eget passord her
 
@@ -183,13 +195,29 @@
       e.preventDefault();
       var apen = spBoks.style.display === "block";
       if (!apen && !spBoks.firstChild) {
-        spBoks.innerHTML = '<iframe data-testid="embed-iframe" style="border-radius:12px" ' +
-          'src="https://open.spotify.com/embed/playlist/6XuxQ5jmpUDzoEIB5U0tMO?utm_source=generator&si=3e41db8eced04479" ' +
-          'width="100%" height="352" frameBorder="0" allowfullscreen="" ' +
-          'allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+        spBoks.innerHTML =
+          '<iframe width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay; encrypted-media" ' +
+          'src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2217521369&color=%23a3307a&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>' +
+          '<div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;">' +
+          '<a href="https://soundcloud.com/carl-keef-763110059" title="Carl Keef" target="_blank" rel="noopener" style="color: #cccccc; text-decoration: none;">Carl Keef</a> · ' +
+          '<a href="https://soundcloud.com/carl-keef-763110059/sets/untitled-playlist" title="FyreSyre" target="_blank" rel="noopener" style="color: #cccccc; text-decoration: none;">FyreSyre</a></div>';
       }
       spBoks.style.display = apen ? "none" : "block";
       spLenke.setAttribute("aria-expanded", apen ? "false" : "true");
+    });
+
+    // ---- Logg ut: tilbake til passordsiden ----
+    document.getElementById("loggut").addEventListener("click", function (e) {
+      e.preventDefault();
+      try { sessionStorage.removeItem("innlogget"); } catch (err) {}
+      site.style.display = "none";
+      spBoks.style.display = "none";
+      spLenke.setAttribute("aria-expanded", "false");
+      stage.style.display = "";
+      gate.style.display = "";
+      error.textContent = "";
+      input.value = "";
+      input.focus();
     });
 
     document.getElementById("enter").addEventListener("click", tryEnter);

@@ -42,7 +42,7 @@
       text-transform: uppercase;
       white-space: nowrap;
       /* jevn, sakte spinn rundt sitt eget senter */
-      animation: spin 14s linear infinite;
+      animation: spin 9s linear infinite;
     }
     #logo .layer { display: block; }
     #logo .layer.back { position: absolute; left: 0; top: 0; }
@@ -81,6 +81,10 @@
     .navn { margin: 0.8rem 0 0; color: var(--front); }
     .pris { margin: 0.1rem 0 0; font-family: "Courier New", monospace; color: var(--front); }
 
+    a.produkt { display: block; color: inherit; text-decoration: none; }
+    a.produkt:hover .bilde, a.produkt:focus-visible .bilde { border-color: var(--white); }
+    a.produkt:focus-visible { outline: 1px solid var(--white); outline-offset: 4px; }
+
     @media (max-width: 600px) {
       body { font-size: 16px; padding: 0.75rem; }
       #logo { font-size: 16vw; }
@@ -106,16 +110,16 @@
 
   <!-- Plassholdere: bytt ut med ekte produkter -->
   <div class="grid">
-    <div class="produkt">
+    <a class="produkt" href="produkt.html?id=1">
       <div class="bilde"></div>
       <p class="navn">Produkt 1</p>
       <p class="pris">kr 000</p>
-    </div>
-    <div class="produkt">
+    </a>
+    <a class="produkt" href="produkt.html?id=2">
       <div class="bilde"></div>
       <p class="navn">Produkt 2</p>
       <p class="pris">kr 000</p>
-    </div>
+    </a>
   </div>
 
   <script>

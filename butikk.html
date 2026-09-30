@@ -516,58 +516,104 @@
         var node1 = document.getElementById('product-component-1790770026577');
         var node2 = document.getElementById('product-component-1790771795558');
 
-        function syncInitialVariantImage(productNode) {
-          var productObserver;
-          var frameObserver;
+        function installColorLabels(productNode) {
+          var frame = productNode.querySelector("iframe");
+          var frameDocument = frame && frame.contentDocument;
+          if (!frameDocument) return false;
 
-          function applySelectedColor() {
-            var frame = productNode.querySelector("iframe");
-            var frameDocument = frame && frame.contentDocument;
-            if (!frameDocument) return false;
+          var colorSelect = frameDocument.querySelector('select[name="Color"]');
+          if (!colorSelect) return false;
 
-            var colorSelect = frameDocument.querySelector("select");
-            if (!colorSelect) {
-              if (!frameObserver) {
-                frameObserver = new MutationObserver(function () {
-                  if (applySelectedColor()) {
-                    frameObserver.disconnect();
-                    productObserver.disconnect();
-                  }
-                });
-                frameObserver.observe(frameDocument, { childList: true, subtree: true });
-              }
-              return false;
-            }
+          var colorLabels = {
+            Cardinal: "Rød",
+            Heliconia: "Rosa",
+            White: "Hvit",
+            Navy: "Navy"
+          };
 
-            colorSelect.dispatchEvent(new Event("change", { bubbles: true }));
-            return true;
+          function updateColorLabels() {
+            var currentColorSelect = frameDocument.querySelector('select[name="Color"]');
+            if (!currentColorSelect) return;
+
+            Array.from(currentColorSelect.options).forEach(function (option) {
+              var label = colorLabels[option.value];
+              if (label && option.textContent !== label) option.textContent = label;
+            });
           }
 
-          productObserver = new MutationObserver(function () {
-            if (applySelectedColor()) productObserver.disconnect();
+          updateColorLabels();
+          new MutationObserver(updateColorLabels).observe(frameDocument.body, {
+            childList: true,
+            subtree: true,
+            characterData: true
           });
-          productObserver.observe(productNode, { childList: true, subtree: true });
-          if (applySelectedColor()) productObserver.disconnect();
+          return true;
+        }
+
+        function chooseRandomColor(productComponent) {
+          var colorOption = productComponent.model.options.find(function (option) {
+            return option.name === "Color";
+          });
+          if (!colorOption) return;
+
+          var colors = colorOption.values.map(function (value) {
+            return value.value;
+          });
+          var availableColors = colors.filter(function (color) {
+            return productComponent.model.variants.some(function (variant) {
+              return variant.available && variant.selectedOptions.every(function (option) {
+                if (option.name === "Color") return option.value === color;
+                return productComponent.selectedOptions[option.name] === option.value;
+              });
+            });
+          });
+          var choices = availableColors.length ? availableColors : colors;
+          if (choices.length) {
+            var randomColor = choices[Math.floor(Math.random() * choices.length)];
+            productComponent.updateVariant("Color", randomColor);
+          }
+        }
+
+        function waitForColorLabels(productNode) {
+          var attempts = 0;
+          function tryInstall() {
+            attempts += 1;
+            var productComponent = ui.components.product.find(function (component) {
+              return component.node === productNode
+                && component.model.variants
+                && component.model.variants.length;
+            });
+            if (productComponent && productNode.dataset.randomColorChosen !== "true") {
+              productNode.dataset.randomColorChosen = "true";
+              chooseRandomColor(productComponent);
+              window.setTimeout(tryInstall, 0);
+              return;
+            }
+            if (productComponent && installColorLabels(productNode)) return;
+            if (attempts >= 100) return;
+            window.setTimeout(tryInstall, 100);
+          }
+          tryInstall();
         }
 
         if (node1) {
           node1.dataset.rendered = "true";
           node1.innerHTML = "";
-          syncInitialVariantImage(node1);
           ui.createComponent('product', Object.assign({}, sharedProductConfig, {
             id: '15399657373975',
             node: node1
           }));
+          waitForColorLabels(node1);
         }
 
         if (node2) {
           node2.dataset.rendered = "true";
           node2.innerHTML = "";
-          syncInitialVariantImage(node2);
           ui.createComponent('product', Object.assign({}, sharedProductConfig, {
             id: '15399682769175',
             node: node2
           }));
+          waitForColorLabels(node2);
         }
 
         var cartButton = document.getElementById("cart-trigger");

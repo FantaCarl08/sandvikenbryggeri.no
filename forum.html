@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forum – Sandviken Bryggeri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --front: #a3307a;
+      --side: #3a0d2b;
+      --text: #ffffff;
+      --bg: #000000;
+      --muted: #c8c0c6;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 1.25rem 1rem 4rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Times New Roman", Times, serif;
+      font-size: 18px;
+    }
+    a { color: var(--front); font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .topline { display: flex; justify-content: space-between; gap: 1rem; }
+    h1 {
+      margin: 2.5rem 0 0.25rem;
+      color: var(--front);
+      font-family: Anton, Impact, "Arial Narrow", sans-serif;
+      font-size: 3rem;
+      font-weight: 400;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .intro { margin: 0 0 2rem; color: var(--muted); }
+    h2 { margin: 0 0 1rem; font-size: 1.2rem; }
+    .compose { padding: 1.25rem 0 1.5rem; border-top: 1px solid var(--front); border-bottom: 1px solid var(--front); }
+    .field { margin-bottom: 1rem; }
+    label { display: block; margin-bottom: 0.35rem; }
+    input, textarea {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid #85727f;
+      border-radius: 0;
+      background: #111111;
+      color: var(--text);
+      font: inherit;
+    }
+    textarea { min-height: 8rem; resize: vertical; }
+    input:focus, textarea:focus { outline: 2px solid var(--front); outline-offset: 2px; }
+    button {
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--front);
+      border-radius: 0;
+      background: var(--front);
+      color: #ffffff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover:not(:disabled) { background: var(--side); }
+    button:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+    button:disabled { cursor: wait; opacity: 0.65; }
+    .notice, #forum-status, #forum-error { min-height: 1.4em; margin: 0.75rem 0 0; }
+    .notice { color: var(--muted); font-size: 0.9rem; }
+    #forum-error { color: #ff9bbd; }
+    #forum-status { color: var(--muted); }
+    .posts-heading { margin: 2rem 0 0.5rem; }
+    #forum-posts { margin: 0; padding: 0; list-style: none; }
+    .post { padding: 1.25rem 0; border-bottom: 1px solid #4d3545; }
+    .post-meta { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: 0.9rem; }
+    .post-author { color: var(--front); font-weight: 700; }
+    .post-body { margin: 0.65rem 0 0; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-wrap; }
+    #load-more { display: block; margin: 1.5rem auto 0; background: transparent; }
+    #load-more[hidden] { display: none; }
+    .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+    @media (max-width: 600px) {
+      body { padding: 1rem 0.75rem 3rem; font-size: 16px; }
+      h1 { margin-top: 2rem; font-size: 2.5rem; }
+      .post-meta { flex-direction: column; gap: 0.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="topline" aria-label="Hovedmeny">
+      <a href="index.html">&larr; Tilbake</a>
+      <a href="butikk.html">Butikk</a>
+    </nav>
+    <h1>Forum</h1>
+    <p class="intro">Samtaler fra Sandviken Bryggeri.</p>
+  </header>
+
+  <main>
+    <section class="compose" aria-labelledby="compose-heading">
+      <h2 id="compose-heading">Skriv et innlegg</h2>
+      <form id="forum-form">
+        <div class="field">
+          <label for="forum-author">Navn</label>
+          <input id="forum-author" name="author" maxlength="40" autocomplete="nickname" placeholder="Anonym">
+        </div>
+        <div class="field">
+          <label for="forum-body">Kommentar</label>
+          <textarea id="forum-body" name="body" maxlength="1000" required></textarea>
+        </div>
+        <div class="honeypot" aria-hidden="true">
+          <label for="forum-website">La dette feltet stå tomt</label>
+          <input id="forum-website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <button id="forum-submit" type="submit" disabled>Publiser</button>
+        <p class="notice">Innleggene er offentlige. Ikke skriv personlig eller sensitiv informasjon.</p>
+        <p id="forum-status" role="status" aria-live="polite"></p>
+        <p id="forum-error" role="alert"></p>
+      </form>
+    </section>
+
+    <section aria-labelledby="posts-heading">
+      <h2 class="posts-heading" id="posts-heading">Siste innlegg</h2>
+      <p id="forum-empty" hidden>Ingen innlegg ennå.</p>
+      <ol id="forum-posts" aria-live="polite"></ol>
+      <button id="load-more" type="button" hidden>Vis eldre innlegg</button>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="forum-config.js"></script>
+  <script src="forum.js"></script>
+</body>
+</html>

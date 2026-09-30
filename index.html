@@ -80,7 +80,19 @@
       width: max-content;
       max-width: 100vw;
     }
-    #site { display: none; width: 100%; max-width: 32rem; }
+    #site { display: none; width: 100%; max-width: 80rem; }
+    .countdown-stage { width: 100%; padding: 0.5rem 0; }
+    #countdown {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Anton, Impact, "Arial Narrow", sans-serif;
+      font-size: min(18.5vw, 30vh, 16rem);
+      line-height: 1;
+      white-space: nowrap;
+      color: var(--front);
+    }
+    .countdown-value { min-width: 1.08em; text-align: center; }
     #spilleliste { display: none; margin: 0 auto 1rem; }
     #spilleliste iframe { display: block; width: 100%; border: 0; }
     a { color: var(--front); }
@@ -126,9 +138,15 @@
 
   <!-- Selve nettsiden (skjult til passordet er riktig) -->
   <div id="site">
-    <p>Nettsiden er under bygging</p>
+    <div class="countdown-stage">
+      <div id="countdown" role="timer" aria-label="00:00:00:00">
+        <span class="countdown-value" id="countdown-days">00</span>
+        <span class="countdown-value" id="countdown-hours">00</span>
+        <span class="countdown-value" id="countdown-minutes">00</span>
+        <span class="countdown-value" id="countdown-seconds">00</span>
+      </div>
+    </div>
     <p><a href="butikk.html">Butikk</a></p>
-    <p><a href="forum.html">Forum</a></p>
     <p><a href="#">Fotoalbum</a></p>
     <p><a href="#" id="spilleliste-lenke" aria-expanded="false" aria-controls="spilleliste">Playlist</a></p>
     <div id="spilleliste"></div>
@@ -158,6 +176,46 @@
         : "color-mix(in srgb, var(--front) " + Math.round(pct * 0.55) + "%, var(--side))";
       logo.appendChild(s);
     }
+
+    var countdown = document.getElementById("countdown");
+    var countdownDays = document.getElementById("countdown-days");
+    var countdownHours = document.getElementById("countdown-hours");
+    var countdownMinutes = document.getElementById("countdown-minutes");
+    var countdownSeconds = document.getElementById("countdown-seconds");
+
+    function getNextSunday() {
+      var target = new Date();
+      target.setHours(0, 0, 0, 0);
+      var daysUntilSunday = (7 - target.getDay()) % 7 || 7;
+      target.setDate(target.getDate() + daysUntilSunday);
+      return target;
+    }
+
+    var countdownTarget = getNextSunday();
+    function updateCountdown() {
+      var remaining = countdownTarget.getTime() - Date.now();
+      if (remaining <= 0) {
+        countdownTarget = getNextSunday();
+        remaining = countdownTarget.getTime() - Date.now();
+      }
+
+      var days = Math.floor(remaining / 86400000);
+      var hours = Math.floor((remaining % 86400000) / 3600000);
+      var minutes = Math.floor((remaining % 3600000) / 60000);
+      var seconds = Math.floor((remaining % 60000) / 1000);
+      countdownDays.textContent = String(days).padStart(2, "0");
+      countdownHours.textContent = String(hours).padStart(2, "0");
+      countdownMinutes.textContent = String(minutes).padStart(2, "0");
+      countdownSeconds.textContent = String(seconds).padStart(2, "0");
+      var display = [days, hours, minutes, seconds].map(function (value) {
+        return String(value).padStart(2, "0");
+      }).join(":");
+      countdown.setAttribute("aria-label", days + " dager, " + hours + " timer, "
+        + minutes + " minutter, " + seconds + " sekunder");
+    }
+
+    updateCountdown();
+    window.setInterval(updateCountdown, 1000);
 
     // ---- Passordsjekk ----
     var stage = document.getElementById("stage");

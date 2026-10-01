@@ -69,7 +69,27 @@
       max-width: 30rem;
     }
     label { display: block; margin-bottom: 0.6rem; }
-    input, button { font-size: 1rem; }        /* standard nettleserutseende, med vilje */
+    input, button { font-size: 1rem; }
+    #pw {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--front);
+      border-radius: 0;
+      background: #111111;
+      color: var(--white);
+      font-family: inherit;
+    }
+    #pw:focus-visible { outline: 2px solid var(--front); outline-offset: 3px; }
+    #enter {
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--front);
+      border-radius: 0;
+      background: transparent;
+      color: var(--front);
+      font-family: inherit;
+      cursor: pointer;
+    }
+    #enter:hover { background: var(--front); color: var(--white); }
+    #enter:focus-visible { outline: 2px solid var(--front); outline-offset: 3px; }
     #error { color: var(--front); font-weight: bold; min-height: 1.4em; margin: 0.6rem 0 0; }
     #gate, #site { position: relative; z-index: 10; }
     #midt #gate {
@@ -86,6 +106,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      padding: 0.06em 0.08em;
+      border: 1px solid var(--front);
       font-family: Anton, Impact, "Arial Narrow", sans-serif;
       font-size: min(18.5vw, 30vh, 16rem);
       line-height: 1;
@@ -129,8 +151,7 @@
 
     <!-- Passordsperre (rett under logoen) -->
     <div id="gate">
-      <label for="pw">Skriv inn passord:</label>
-      <input type="password" id="pw" autocomplete="off" autofocus>
+      <input type="password" id="pw" aria-label="Skriv inn passord" autocomplete="off" autofocus>
       <button id="enter">OK</button>
       <p id="error" role="alert"></p>
     </div>

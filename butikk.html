@@ -7,6 +7,12 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://sdks.shopifycdn.com">
+  <link rel="preconnect" href="https://sdks.shopifycdn.com">
+  <link rel="dns-prefetch" href="https://bkdaii-ce.myshopify.com">
+  <link rel="preconnect" href="https://bkdaii-ce.myshopify.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.shopify.com">
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -138,6 +144,9 @@
       z-index: 10;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
+      grid-template-areas:
+        "first second"
+        "third .";
       justify-items: center;
       gap: var(--grid-gap);
       width: 100%;
@@ -161,6 +170,12 @@
     #product-component-1790771795558 {
       width: 100%;
     }
+
+    #product-component-1790770026577 { grid-area: first; }
+    #product-component-1790771795558 { grid-area: second; }
+    #product-component-1790840483651 { grid-area: third; }
+
+    #product-component-1790840483651 { width: 100%; }
 
     .mock-card {
       width: 100%;
@@ -241,7 +256,11 @@
         margin-bottom: 2.2rem; /* Tilpasset avstand på mobil */
       }
       :root { --grid-gap: 1.25rem; }
-      .grid { grid-template-columns: 1fr; gap: var(--grid-gap); }
+      .grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "first" "third" "second";
+        gap: var(--grid-gap);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -268,6 +287,10 @@
   <div class="grid">
     <!-- Produkt 1 Container -->
     <div id="product-component-1790770026577"></div>
+
+    <!-- Produkt 2 Container -->
+    <!-- Produkt 3 Container -->
+    <div id="product-component-1790840483651"></div>
 
     <!-- Produkt 2 Container -->
     <div id="product-component-1790771795558"></div>
@@ -516,33 +539,40 @@
         var node1 = document.getElementById('product-component-1790770026577');
         var node2 = document.getElementById('product-component-1790771795558');
 
-        function installColorLabels(productNode) {
+        function installOptionLabels(productNode) {
           var frame = productNode.querySelector("iframe");
           var frameDocument = frame && frame.contentDocument;
           if (!frameDocument) return false;
 
-          var colorSelect = frameDocument.querySelector('select[name="Color"]');
-          if (!colorSelect) return false;
+          if (!frameDocument.querySelector("select")) return false;
 
-          var colorLabels = {
-            Cardinal: "Rød",
-            Heliconia: "Rosa",
-            White: "Hvit",
-            Navy: "Navy"
+          var optionLabels = {
+            Color: {
+              Cardinal: "Rød",
+              Heliconia: "Rosa",
+              White: "Hvit",
+              Navy: "Navy"
+            },
+            Size: {
+              "11 oz": "3,25 dl",
+              "15 oz": "4,44 dl",
+              "20 oz": "5,91 dl"
+            }
           };
 
-          function updateColorLabels() {
-            var currentColorSelect = frameDocument.querySelector('select[name="Color"]');
-            if (!currentColorSelect) return;
-
-            Array.from(currentColorSelect.options).forEach(function (option) {
-              var label = colorLabels[option.value];
-              if (label && option.textContent !== label) option.textContent = label;
+          function updateOptionLabels() {
+            Array.from(frameDocument.querySelectorAll("select")).forEach(function (select) {
+              var labels = optionLabels[select.name];
+              if (!labels) return;
+              Array.from(select.options).forEach(function (option) {
+                var label = labels[option.value];
+                if (label && option.textContent !== label) option.textContent = label;
+              });
             });
           }
 
-          updateColorLabels();
-          new MutationObserver(updateColorLabels).observe(frameDocument.body, {
+          updateOptionLabels();
+          new MutationObserver(updateOptionLabels).observe(frameDocument.body, {
             childList: true,
             subtree: true,
             characterData: true
@@ -574,7 +604,7 @@
           }
         }
 
-        function waitForColorLabels(productNode) {
+        function waitForOptionLabels(productNode, randomizeColor) {
           var attempts = 0;
           function tryInstall() {
             attempts += 1;
@@ -583,13 +613,13 @@
                 && component.model.variants
                 && component.model.variants.length;
             });
-            if (productComponent && productNode.dataset.randomColorChosen !== "true") {
+            if (randomizeColor && productComponent && productNode.dataset.randomColorChosen !== "true") {
               productNode.dataset.randomColorChosen = "true";
               chooseRandomColor(productComponent);
               window.setTimeout(tryInstall, 0);
               return;
             }
-            if (productComponent && installColorLabels(productNode)) return;
+            if (productComponent && installOptionLabels(productNode)) return;
             if (attempts >= 100) return;
             window.setTimeout(tryInstall, 100);
           }
@@ -603,7 +633,7 @@
             id: '15399657373975',
             node: node1
           }));
-          waitForColorLabels(node1);
+          waitForOptionLabels(node1, true);
         }
 
         if (node2) {
@@ -613,7 +643,30 @@
             id: '15399682769175',
             node: node2
           }));
-          waitForColorLabels(node2);
+          waitForOptionLabels(node2, true);
+        }
+
+        var node3 = document.getElementById('product-component-1790840483651');
+        if (node3) {
+          node3.dataset.rendered = "true";
+          node3.innerHTML = "";
+          var mugConfig = Object.assign({}, sharedProductConfig, {
+            id: '15401242067223',
+            variantId: '67612918186263',
+            node: node3
+          });
+          mugConfig.options = Object.assign({}, sharedProductConfig.options, {
+            product: Object.assign({}, sharedProductConfig.options.product, {
+              events: {
+                afterRender: function (product) {
+                  var title = product.view.document.querySelector('[data-element="product.title"]');
+                  if (title) title.textContent = "Øl Kopp";
+                }
+              }
+            })
+          });
+          ui.createComponent('product', mugConfig);
+          waitForOptionLabels(node3, false);
         }
 
         var cartButton = document.getElementById("cart-trigger");

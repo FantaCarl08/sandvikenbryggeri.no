@@ -147,7 +147,7 @@
       grid-template-columns: repeat(2, 1fr);
       grid-template-areas:
         "first second"
-        "third .";
+        "third fourth";
       justify-items: center;
       gap: var(--grid-gap);
       width: 100%;
@@ -168,13 +168,15 @@
     }
 
     #product-component-1790770026577,
-    #product-component-1790771795558 {
+    #product-component-1790771795558,
+    #product-component-1790853048409 {
       width: 100%;
     }
 
     #product-component-1790770026577 { grid-area: first; }
     #product-component-1790771795558 { grid-area: second; }
     #product-component-1790840483651 { grid-area: third; }
+    #product-component-1790853048409 { grid-area: fourth; }
 
     #product-component-1790840483651 { width: 100%; }
 
@@ -259,7 +261,7 @@
       :root { --grid-gap: 1.25rem; }
       .grid {
         grid-template-columns: 1fr;
-        grid-template-areas: "first" "third" "second";
+        grid-template-areas: "first" "third" "second" "fourth";
         gap: var(--grid-gap);
       }
     }
@@ -289,12 +291,14 @@
     <!-- Produkt 1 Container -->
     <div id="product-component-1790770026577"></div>
 
-    <!-- Produkt 2 Container -->
     <!-- Produkt 3 Container -->
     <div id="product-component-1790840483651"></div>
 
     <!-- Produkt 2 Container -->
     <div id="product-component-1790771795558"></div>
+
+    <!-- Produkt 4 Container -->
+    <div id="product-component-1790853048409"></div>
   </div>
 
   <script>
@@ -668,6 +672,24 @@
           });
           ui.createComponent('product', mugConfig);
           waitForOptionLabels(node3, false);
+        }
+
+        var node4 = document.getElementById('product-component-1790853048409');
+        if (node4) {
+          node4.dataset.rendered = "true";
+          node4.innerHTML = "";
+          var product4Config = Object.assign({}, sharedProductConfig, {
+            id: '15401310060823',
+            node: node4
+          });
+          product4Config.options = Object.assign({}, sharedProductConfig.options, {
+            product: Object.assign({}, sharedProductConfig.options.product, {
+              contents: Object.assign({}, sharedProductConfig.options.product.contents, {
+                options: false
+              })
+            })
+          });
+          ui.createComponent('product', product4Config);
         }
 
         var cartButton = document.getElementById("cart-trigger");
